@@ -1,153 +1,318 @@
-<div align="center">
-  <br />
-  <br />
-  <a href="https://optimism.io"><img alt="Optimism" src="https://raw.githubusercontent.com/ethereum-optimism/brand-kit/main/assets/svg/OPTIMISM-R.svg" width=600></a>
-  <br />
-  <h3><a href="https://optimism.io">Optimism</a> is Ethereum, scaled.</h3>
-  <br />
-</div>
+## BNB Smart Chain
 
-<!-- START doctoc generated TOC please keep comment here to allow auto update -->
-<!-- DON'T EDIT THIS SECTION, INSTEAD RE-RUN doctoc TO UPDATE -->
-**Table of Contents**
+The goal of BNB Smart Chain is to bring programmability and interoperability to BNB Beacon Chain. In order to embrace the existing popular community and advanced technology, it will bring huge benefits by staying compatible with all the existing smart contracts on Ethereum and Ethereum tooling. And to achieve that, the easiest solution is to develop based on go-ethereum fork, as we respect the great work of Ethereum very much.
 
-- [What is Optimism?](#what-is-optimism)
-- [Documentation](#documentation)
-- [Specification](#specification)
-- [Community](#community)
-- [Contributing](#contributing)
-- [Security Policy and Vulnerability Reporting](#security-policy-and-vulnerability-reporting)
-- [Directory Structure](#directory-structure)
-- [Development and Release Process](#development-and-release-process)
-  - [Overview](#overview)
-  - [Production Releases](#production-releases)
-  - [Development branch](#development-branch)
-- [License](#license)
+BNB Smart Chain starts its development based on go-ethereum fork. So you may see many toolings, binaries and also docs are based on Ethereum ones, such as the name “geth”.
 
-<!-- END doctoc generated TOC please keep comment here to allow auto update -->
+[![API Reference](
+https://pkg.go.dev/badge/github.com/ethereum/go-ethereum
+)](https://pkg.go.dev/github.com/ethereum/go-ethereum?tab=doc)
+[![Discord](https://img.shields.io/badge/discord-join%20chat-blue.svg)](https://discord.gg/z2VpC455eU)
 
-## What is Optimism?
+But from that baseline of EVM compatible, BNB Smart Chain introduces  a system of 21 validators with Proof of Staked Authority (PoSA) consensus that can support short block time and lower fees. The most bonded validator candidates of staking will become validators and produce blocks. The double-sign detection and other slashing logic guarantee security, stability, and chain finality.
 
-[Optimism](https://www.optimism.io/) is a project dedicated to scaling Ethereum's technology and expanding its ability to coordinate people from across the world to build effective decentralized economies and governance systems. The [Optimism Collective](https://app.optimism.io/announcement) builds open-source software for running L2 blockchains and aims to address key governance and economic challenges in the wider cryptocurrency ecosystem. Optimism operates on the principle of **impact=profit**, the idea that individuals who positively impact the Collective should be proportionally rewarded with profit. **Change the incentives and you change the world.**
+Cross-chain transfer and other communication are possible due to native support of interoperability. Relayers and on-chain contracts are developed to support that. BNB Beacon Chain DEX remains a liquid venue of the exchange of assets on both chains. This dual-chain architecture will be ideal for users to take advantage of the fast trading on one side and build their decentralized apps on the other side. **The BNB Smart Chain** will be:
 
-In this repository, you'll find numerous core components of the OP Stack, the decentralized software stack maintained by the Optimism Collective that powers Optimism and forms the backbone of blockchains like [OP Mainnet](https://explorer.optimism.io/) and [Base](https://base.org). Designed to be "aggressively open source," the OP Stack encourages you to explore, modify, extend, and test the code as needed. Although not all elements of the OP Stack are contained here, many of its essential components can be found within this repository. By collaborating on free, open software and shared standards, the Optimism Collective aims to prevent siloed software development and rapidly accelerate the development of the Ethereum ecosystem. Come contribute, build the future, and redefine power, together.
+- **A self-sovereign blockchain**: Provides security and safety with elected validators.
+- **EVM-compatible**: Supports all the existing Ethereum tooling along with faster finality and cheaper transaction fees.
+- **Interoperable**: Comes with efficient native dual chain communication; Optimized for scaling high-performance dApps that require fast and smooth user experience.
+- **Distributed with on-chain governance**: Proof of Staked Authority brings in decentralization and community participants. As the native token, BNB will serve as both the gas of smart contract execution and tokens for staking.
 
-## Documentation
+More details in [White Paper](https://www.bnbchain.org/en#smartChain).
 
-- If you want to build on top of OP Mainnet, refer to the [Optimism Documentation](https://docs.optimism.io)
-- If you want to build your own OP Stack based blockchain, refer to the [OP Stack Guide](https://docs.optimism.io/stack/getting-started), and make sure to understand this repository's [Development and Release Process](#development-and-release-process)
+## Key features
 
-## Specification
+### Proof of Staked Authority 
+Although Proof-of-Work (PoW) has been approved as a practical mechanism to implement a decentralized network, it is not friendly to the environment and also requires a large size of participants to maintain the security. 
 
-If you're interested in the technical details of how Optimism works, refer to the [Optimism Protocol Specification](https://github.com/ethereum-optimism/specs).
+Proof-of-Authority(PoA) provides some defense to 51% attack, with improved efficiency and tolerance to certain levels of Byzantine players (malicious or hacked). 
+Meanwhile, the PoA protocol is most criticized for being not as decentralized as PoW, as the validators, i.e. the nodes that take turns to produce blocks, have all the authorities and are prone to corruption and security attacks.
 
-## Community
+Other blockchains, such as EOS and Cosmos both, introduce different types of Deputy Proof of Stake (DPoS) to allow the token holders to vote and elect the validator set. It increases the decentralization and favors community governance. 
 
-General discussion happens most frequently on the [Optimism discord](https://discord.gg/optimism).
-Governance discussion can also be found on the [Optimism Governance Forum](https://gov.optimism.io/).
+To combine DPoS and PoA for consensus, BNB Smart Chain implement a novel consensus engine called Parlia that:
 
-## Contributing
+1. Blocks are produced by a limited set of validators.
+2. Validators take turns to produce blocks in a PoA manner, similar to Ethereum's Clique consensus engine.
+3. Validator set are elected in and out based on a staking based governance on BNB Beacon Chain.
+4. The validator set change is relayed via a cross-chain communication mechanism.
+5. Parlia consensus engine will interact with a set of [system contracts](https://docs.bnbchain.org/docs/learn/system-contract) to achieve liveness slash, revenue distributing and validator set renewing func.
 
-Read through [CONTRIBUTING.md](./CONTRIBUTING.md) for a general overview of the contributing process for this repository.
-Use the [Developer Quick Start](./CONTRIBUTING.md#development-quick-start) to get your development environment set up to start working on the Optimism Monorepo.
-Then check out the list of [Good First Issues](https://github.com/ethereum-optimism/optimism/issues?q=is:open+is:issue+label:D-good-first-issue) to find something fun to work on!
-Typo fixes are welcome; however, please create a single commit with all of the typo fixes & batch as many fixes together in a PR as possible. Spammy PRs will be closed.
+ 
+### Light Client of BNB Beacon Chain
 
-## Security Policy and Vulnerability Reporting
+To achieve the cross-chain communication from BNB Beacon Chain to BNB Smart Chain, need introduce a on-chain light client verification algorithm.
+It contains two parts:
 
-Please refer to the canonical [Security Policy](https://github.com/ethereum-optimism/.github/blob/master/SECURITY.md) document for detailed information about how to report vulnerabilities in this codebase.
-Bounty hunters are encouraged to check out [the Optimism Immunefi bug bounty program](https://immunefi.com/bounty/optimism/).
-The Optimism Immunefi program offers up to $2,000,042 for in-scope critical vulnerabilities.
+1. [Stateless Precompiled contracts](https://github.com/bnb-chain/bsc/blob/master/core/vm/contracts_lightclient.go) to do tendermint header verification and Merkle Proof verification.
+2. [Stateful solidity contracts](https://github.com/bnb-chain/bsc-genesis-contract/blob/master/contracts/TendermintLightClient.sol) to store validator set and trusted appHash.  
 
-## Directory Structure
+## Native Token
 
-<pre>
-├── <a href="./docs">docs</a>: A collection of documents including audits and post-mortems
-├── <a href="./op-batcher">op-batcher</a>: L2-Batch Submitter, submits bundles of batches to L1
-├── <a href="./op-bindings">op-bindings</a>: Go bindings for Bedrock smart contracts.
-├── <a href="./op-bootnode">op-bootnode</a>: Standalone op-node discovery bootnode
-├── <a href="./op-chain-ops">op-chain-ops</a>: State surgery utilities
-├── <a href="./op-challenger">op-challenger</a>: Dispute game challenge agent
-├── <a href="./op-e2e">op-e2e</a>: End-to-End testing of all bedrock components in Go
-├── <a href="./op-heartbeat">op-heartbeat</a>: Heartbeat monitor service
-├── <a href="./op-node">op-node</a>: rollup consensus-layer client
-├── <a href="./op-preimage">op-preimage</a>: Go bindings for Preimage Oracle
-├── <a href="./op-program">op-program</a>: Fault proof program
-├── <a href="./op-proposer">op-proposer</a>: L2-Output Submitter, submits proposals to L1
-├── <a href="./op-service">op-service</a>: Common codebase utilities
-├── <a href="./op-ufm">op-ufm</a>: Simulations for monitoring end-to-end transaction latency
-├── <a href="./op-wheel">op-wheel</a>: Database utilities
-├── <a href="./ops">ops</a>: Various operational packages
-├── <a href="./ops-bedrock">ops-bedrock</a>: Bedrock devnet work
-├── <a href="./packages">packages</a>
-│   ├── <a href="./packages/chain-mon">chain-mon</a>: Chain monitoring services
-│   ├── <a href="./packages/common-ts">common-ts</a>: Common tools for building apps in TypeScript
-│   ├── <a href="./packages/contracts-bedrock">contracts-bedrock</a>: Bedrock smart contracts
-│   ├── <a href="./packages/contracts-ts">contracts-ts</a>: ABI and Address constants
-│   ├── <a href="./packages/core-utils">core-utils</a>: Low-level utilities that make building Optimism easier
-│   ├── <a href="./packages/fee-estimation">fee-estimation</a>: Tools for estimating gas on OP chains
-│   ├── <a href="./packages/sdk">sdk</a>: provides a set of tools for interacting with Optimism
-│   └── <a href="./packages/web3js-plugin">web3js-plugin</a>: Adds functions to estimate L1 and L2 gas
-├── <a href="./proxyd">proxyd</a>: Configurable RPC request router and proxy
-├── <a href="./specs">specs</a>: Specs of the rollup starting at the Bedrock upgrade
-└── <a href="./ufm-test-services">ufm-test-services</a>: Runs a set of tasks to generate metrics
-</pre>
+BNB will run on BNB Smart Chain in the same way as ETH runs on Ethereum so that it remains as `native token` for BSC. This means,
+BNB will be used to:
 
-## Development and Release Process
+1. pay `gas` to deploy or invoke Smart Contract on BSC
+2. perform cross-chain operations, such as transfer token assets across BNB Smart Chain and BNB Beacon Chain.
 
-### Overview
+## Building the source
 
-Please read this section if you're planning to fork this repository, or make frequent PRs into this repository.
+Many of the below are the same as or similar to go-ethereum.
 
-### Production Releases
+For prerequisites and detailed build instructions please read the [Installation Instructions](https://geth.ethereum.org/docs/getting-started/installing-geth).
 
-Production releases are always tags, versioned as `<component-name>/v<semver>`.
-For example, an `op-node` release might be versioned as `op-node/v1.1.2`, and  smart contract releases might be versioned as `op-contracts/v1.0.0`.
-Release candidates are versioned in the format `op-node/v1.1.2-rc.1`.
-We always start with `rc.1` rather than `rc`.
+Building `geth` requires both a Go (version 1.21 or later) and a C compiler (GCC 5 or higher). You can install
+them using your favourite package manager. Once the dependencies are installed, run
 
-For contract releases, refer to the GitHub release notes for a given release, which will list the specific contracts being released—not all contracts are considered production ready within a release, and many are under active development.
+```shell
+make geth
+```
 
-Tags of the form `v<semver>`, such as `v1.1.4`, indicate releases of all Go code only, and **DO NOT** include smart contracts.
-This naming scheme is required by Golang.
-In the above list, this means these `v<semver` releases contain all `op-*` components, and exclude all `contracts-*` components.
+or, to build the full suite of utilities:
 
-`op-geth` embeds upstream geth’s version inside it’s own version as follows: `vMAJOR.GETH_MAJOR GETH_MINOR GETH_PATCH.PATCH`.
-Basically, geth’s version is our minor version.
-For example if geth is at `v1.12.0`, the corresponding op-geth version would be `v1.101200.0`.
-Note that we pad out to three characters for the geth minor version and two characters for the geth patch version.
-Since we cannot left-pad with zeroes, the geth major version is not padded.
+```shell
+make all
+```
 
-See the [Node Software Releases](https://docs.optimism.io/builders/node-operators/releases) page of the documentation for more information about releases for the latest node components.
-The full set of components that have releases are:
+If you get such error when running the node with self built binary:
+```shell
+Caught SIGILL in blst_cgo_init, consult <blst>/bindinds/go/README.md.
+```
+please try to add the following environment variables and build again:
+```shell
+export CGO_CFLAGS="-O -D__BLST_PORTABLE__" 
+export CGO_CFLAGS_ALLOW="-O -D__BLST_PORTABLE__"
+```
 
-- `chain-mon`
-- `ci-builder`
-- `ci-builder`
-- `indexer`
-- `op-batcher`
-- `op-contracts`
-- `op-challenger`
-- `op-heartbeat`
-- `op-node`
-- `op-proposer`
-- `op-ufm`
-- `proxyd`
-- `ufm-metamask`
+## Executables
 
-All other components and packages should be considered development components only and do not have releases.
+The bsc project comes with several wrappers/executables found in the `cmd`
+directory.
 
-### Development branch
+|  Command   | Description                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                     |
+| :--------: | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **`geth`** | Main BNB Smart Chain client binary. It is the entry point into the BSC network (main-, test- or private net), capable of running as a full node (default), archive node (retaining all historical state) or a light node (retrieving data live). It has the same and more RPC and other interface as go-ethereum and can be used by other processes as a gateway into the BSC network via JSON RPC endpoints exposed on top of HTTP, WebSocket and/or IPC transports. `geth --help` and the [CLI page](https://geth.ethereum.org/docs/interface/command-line-options) for command line options. |
+|   `clef`   | Stand-alone signing tool, which can be used as a backend signer for `geth`.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                     |
+|  `devp2p`  | Utilities to interact with nodes on the networking layer, without running a full blockchain.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    |
+|  `abigen`  | Source code generator to convert Ethereum contract definitions into easy to use, compile-time type-safe Go packages. It operates on plain [Ethereum contract ABIs](https://docs.soliditylang.org/en/develop/abi-spec.html) with expanded functionality if the contract bytecode is also available. However, it also accepts Solidity source files, making development much more streamlined. Please see our [Native DApps](https://geth.ethereum.org/docs/dapp/native-bindings) page for details.                                                                                               |
+| `bootnode` | Stripped down version of our Ethereum client implementation that only takes part in the network node discovery protocol, but does not run any of the higher level application protocols. It can be used as a lightweight bootstrap node to aid in finding peers in private networks.                                                                                                                                                                                                                                                                                                            |
+|   `evm`    | Developer utility version of the EVM (Ethereum Virtual Machine) that is capable of running bytecode snippets within a configurable environment and execution mode. Its purpose is to allow isolated, fine-grained debugging of EVM opcodes (e.g. `evm --code 60ff60ff --debug run`).                                                                                                                                                                                                                                                                                                            |
+| `rlpdump`  | Developer utility tool to convert binary RLP ([Recursive Length Prefix](https://ethereum.org/en/developers/docs/data-structures-and-encoding/rlp)) dumps (data encoding used by the Ethereum protocol both network as well as consensus wise) to user-friendlier hierarchical representation (e.g. `rlpdump --hex CE0183FFFFFFC4C304050583616263`).                                                                                                                                                                                                                                                                                 |
 
-The primary development branch is [`develop`](https://github.com/ethereum-optimism/optimism/tree/develop/).
-`develop` contains the most up-to-date software that remains backwards compatible with the latest experimental [network deployments](https://community.optimism.io/docs/useful-tools/networks/).
-If you're making a backwards compatible change, please direct your pull request towards `develop`.
+## Running `geth`
 
-**Changes to contracts within `packages/contracts-bedrock/src` are usually NOT considered backwards compatible.**
-Some exceptions to this rule exist for cases in which we absolutely must deploy some new contract after a tag has already been fully deployed.
-If you're changing or adding a contract and you're unsure about which branch to make a PR into, default to using a feature branch.
-Feature branches are typically used when there are conflicts between 2 projects touching the same code, to avoid conflicts from merging both into `develop`.
+Going through all the possible command line flags is out of scope here (please consult our
+[CLI Wiki page](https://geth.ethereum.org/docs/fundamentals/command-line-options)),
+but we've enumerated a few common parameter combos to get you up to speed quickly
+on how you can run your own `geth` instance.
+
+### Hardware Requirements
+
+The hardware must meet certain requirements to run a full node on mainnet:
+- VPS running recent versions of Mac OS X, Linux, or Windows.
+- IMPORTANT 3 TB(Dec 2023) of free disk space, solid-state drive(SSD), gp3, 8k IOPS, 500 MB/S throughput, read latency <1ms. (if node is started with snap sync, it will need NVMe SSD)
+- 16 cores of CPU and 64 GB of memory (RAM)
+- Suggest m5zn.6xlarge or r7iz.4xlarge instance type on AWS, c2-standard-16 on Google cloud.
+- A broadband Internet connection with upload/download speeds of 5 MB/S
+
+The requirement for testnet:
+- VPS running recent versions of Mac OS X, Linux, or Windows.
+- 500G of storage for testnet.
+- 4 cores of CPU and 16 gigabytes of memory (RAM).
+
+### Steps to Run a Fullnode
+
+#### 1. Download the pre-build binaries
+```shell
+# Linux
+wget $(curl -s https://api.github.com/repos/bnb-chain/bsc/releases/latest |grep browser_ |grep geth_linux |cut -d\" -f4)
+mv geth_linux geth
+chmod -v u+x geth
+
+# MacOS
+wget $(curl -s https://api.github.com/repos/bnb-chain/bsc/releases/latest |grep browser_ |grep geth_mac |cut -d\" -f4)
+mv geth_macos geth
+chmod -v u+x geth
+```
+
+#### 2. Download the config files
+```shell
+//== mainnet
+wget $(curl -s https://api.github.com/repos/bnb-chain/bsc/releases/latest |grep browser_ |grep mainnet |cut -d\" -f4)
+unzip mainnet.zip
+
+//== testnet
+wget $(curl -s https://api.github.com/repos/bnb-chain/bsc/releases/latest |grep browser_ |grep testnet |cut -d\" -f4)
+unzip testnet.zip
+```
+
+#### 3. Download snapshot
+Download latest chaindata snapshot from [here](https://github.com/bnb-chain/bsc-snapshots). Follow the guide to structure your files.
+
+Note: If you encounter difficulties downloading the chaindata snapshot and prefer to synchronize from the genesis block on the Chapel testnet, remember to include the additional flag `--chapel` when initially launching Geth.
+
+#### 4. Start a full node
+```shell
+./geth --config ./config.toml --datadir ./node  --cache 8000 --rpc.allow-unprotected-txs --history.transactions 0
+
+## It is recommend to run fullnode with `--tries-verify-mode none` if you want high performance and care little about state consistency
+## It will run with Hash-Base Storage Scheme by default
+./geth --config ./config.toml --datadir ./node  --cache 8000 --rpc.allow-unprotected-txs --history.transactions 0 --tries-verify-mode none
+
+## It runs fullnode with Path-Base Storage Scheme. 
+## It will enable inline state prune, keeping the latest 90000 blocks' history state by default.
+./geth --config ./config.toml --datadir ./node  --cache 8000 --rpc.allow-unprotected-txs --history.transactions 0 --tries-verify-mode none --state.scheme path
+```
+
+#### 5. Monitor node status
+
+Monitor the log from **./node/bsc.log** by default. When the node has started syncing, should be able to see the following output:
+```shell
+t=2022-09-08T13:00:27+0000 lvl=info msg="Imported new chain segment"             blocks=1    txs=177   mgas=17.317   elapsed=31.131ms    mgasps=556.259  number=21,153,429 hash=0x42e6b54ba7106387f0650defc62c9ace3160b427702dab7bd1c5abb83a32d8db dirty="0.00 B"
+t=2022-09-08T13:00:29+0000 lvl=info msg="Imported new chain segment"             blocks=1    txs=251   mgas=39.638   elapsed=68.827ms    mgasps=575.900  number=21,153,430 hash=0xa3397b273b31b013e43487689782f20c03f47525b4cd4107c1715af45a88796e dirty="0.00 B"
+t=2022-09-08T13:00:33+0000 lvl=info msg="Imported new chain segment"             blocks=1    txs=197   mgas=19.364   elapsed=34.663ms    mgasps=558.632  number=21,153,431 hash=0x0c7872b698f28cb5c36a8a3e1e315b1d31bda6109b15467a9735a12380e2ad14 dirty="0.00 B"
+```
+
+#### 6. Interact with fullnode
+Start up `geth`'s built-in interactive [JavaScript console](https://geth.ethereum.org/docs/interface/javascript-console),
+(via the trailing `console` subcommand) through which you can interact using [`web3` methods](https://web3js.readthedocs.io/en/) 
+(note: the `web3` version bundled within `geth` is very old, and not up to date with official docs),
+as well as `geth`'s own [management APIs](https://geth.ethereum.org/docs/rpc/server).
+This tool is optional and if you leave it out you can always attach to an already running
+`geth` instance with `geth attach`.
+
+#### 7. More
+
+More details about [running a node](https://docs.bnbchain.org/docs/validator/fullnode) and [becoming a validator](https://docs.bnbchain.org/docs/validator/create-val)
+
+*Note: Although some internal protective measures prevent transactions from
+crossing over between the main network and test network, you should always
+use separate accounts for play and real money. Unless you manually move
+accounts, `geth` will by default correctly separate the two networks and will not make any
+accounts available between them.*
+
+### Configuration
+
+As an alternative to passing the numerous flags to the `geth` binary, you can also pass a
+configuration file via:
+
+```shell
+$ geth --config /path/to/your_config.toml
+```
+
+To get an idea of how the file should look like you can use the `dumpconfig` subcommand to
+export your existing configuration:
+
+```shell
+$ geth --your-favourite-flags dumpconfig
+```
+
+### Programmatically interfacing `geth` nodes
+
+As a developer, sooner rather than later you'll want to start interacting with `geth` and the
+BSC network via your own programs and not manually through the console. To aid
+this, `geth` has built-in support for a JSON-RPC based APIs ([standard APIs](https://ethereum.github.io/execution-apis/api-documentation/)
+and [`geth` specific APIs](https://geth.ethereum.org/docs/interacting-with-geth/rpc)).
+These can be exposed via HTTP, WebSockets and IPC (UNIX sockets on UNIX based
+platforms, and named pipes on Windows).
+
+The IPC interface is enabled by default and exposes all the APIs supported by `geth`,
+whereas the HTTP and WS interfaces need to manually be enabled and only expose a
+subset of APIs due to security reasons. These can be turned on/off and configured as
+you'd expect.
+
+HTTP based JSON-RPC API options:
+
+* `--http` Enable the HTTP-RPC server
+* `--http.addr` HTTP-RPC server listening interface (default: `localhost`)
+* `--http.port` HTTP-RPC server listening port (default: `8545`)
+* `--http.api` API's offered over the HTTP-RPC interface (default: `eth,net,web3`)
+* `--http.corsdomain` Comma separated list of domains from which to accept cross origin requests (browser enforced)
+* `--ws` Enable the WS-RPC server
+* `--ws.addr` WS-RPC server listening interface (default: `localhost`)
+* `--ws.port` WS-RPC server listening port (default: `8546`)
+* `--ws.api` API's offered over the WS-RPC interface (default: `eth,net,web3`)
+* `--ws.origins` Origins from which to accept WebSocket requests
+* `--ipcdisable` Disable the IPC-RPC server
+* `--ipcapi` API's offered over the IPC-RPC interface (default: `admin,debug,eth,miner,net,personal,txpool,web3`)
+* `--ipcpath` Filename for IPC socket/pipe within the datadir (explicit paths escape it)
+
+You'll need to use your own programming environments' capabilities (libraries, tools, etc) to
+connect via HTTP, WS or IPC to a `geth` node configured with the above flags and you'll
+need to speak [JSON-RPC](https://www.jsonrpc.org/specification) on all transports. You
+can reuse the same connection for multiple requests!
+
+**Note: Please understand the security implications of opening up an HTTP/WS based
+transport before doing so! Hackers on the internet are actively trying to subvert
+BSC nodes with exposed APIs! Further, all browser tabs can access locally
+running web servers, so malicious web pages could try to subvert locally available
+APIs!**
+
+### Operating a private network
+- [BSC-Deploy](https://github.com/bnb-chain/node-deploy/): deploy tool for setting up both BNB Beacon Chain, BNB Smart Chain and the cross chain infrastructure between them.
+- [BSC-Docker](https://github.com/bnb-chain/bsc-docker): deploy tool for setting up local BSC cluster in container.
+
+
+## Running a bootnode
+
+Bootnodes are super-lightweight nodes that are not behind a NAT and are running just discovery protocol. When you start up a node it should log your enode, which is a public identifier that others can use to connect to your node. 
+
+First the bootnode requires a key, which can be created with the following command, which will save a key to boot.key:
+
+```
+bootnode -genkey boot.key
+```
+
+This key can then be used to generate a bootnode as follows:
+
+```
+bootnode -nodekey boot.key -addr :30311 -network bsc
+```
+
+The choice of port passed to -addr is arbitrary. 
+The bootnode command returns the following logs to the terminal, confirming that it is running:
+
+```
+enode://3063d1c9e1b824cfbb7c7b6abafa34faec6bb4e7e06941d218d760acdd7963b274278c5c3e63914bd6d1b58504c59ec5522c56f883baceb8538674b92da48a96@127.0.0.1:0?discport=30311
+Note: you're using cmd/bootnode, a developer tool.
+We recommend using a regular node as bootstrap node for production deployments.
+INFO [08-21|11:11:30.687] New local node record                    seq=1,692,616,290,684 id=2c9af1742f8f85ce ip=<nil> udp=0 tcp=0
+INFO [08-21|12:11:30.753] New local node record                    seq=1,692,616,290,685 id=2c9af1742f8f85ce ip=54.217.128.118 udp=30311 tcp=0
+INFO [09-01|02:46:26.234] New local node record                    seq=1,692,616,290,686 id=2c9af1742f8f85ce ip=34.250.32.100  udp=30311 tcp=0
+```
+
+## Contribution
+
+Thank you for considering helping out with the source code! We welcome contributions
+from anyone on the internet, and are grateful for even the smallest of fixes!
+
+If you'd like to contribute to bsc, please fork, fix, commit and send a pull request
+for the maintainers to review and merge into the main code base. If you wish to submit
+more complex changes though, please check up with the core devs first on [our discord channel](https://discord.gg/bnbchain)
+to ensure those changes are in line with the general philosophy of the project and/or get
+some early feedback which can make both your efforts much lighter as well as our review
+and merge procedures quick and simple.
+
+Please make sure your contributions adhere to our coding guidelines:
+
+ * Code must adhere to the official Go [formatting](https://golang.org/doc/effective_go.html#formatting)
+   guidelines (i.e. uses [gofmt](https://golang.org/cmd/gofmt/)).
+ * Code must be documented adhering to the official Go [commentary](https://golang.org/doc/effective_go.html#commentary)
+   guidelines.
+ * Pull requests need to be based on and opened against the `master` branch.
+ * Commit messages should be prefixed with the package(s) they modify.
+   * E.g. "eth, rpc: make trace configs optional"
+
+Please see the [Developers' Guide](https://geth.ethereum.org/docs/developers/geth-developer/dev-guide)
+for more details on configuring your environment, managing project dependencies, and
+testing procedures.
 
 ## License
 
-All other files within this repository are licensed under the [MIT License](https://github.com/ethereum-optimism/optimism/blob/master/LICENSE) unless stated otherwise.
+The bsc library (i.e. all code outside of the `cmd` directory) is licensed under the
+[GNU Lesser General Public License v3.0](https://www.gnu.org/licenses/lgpl-3.0.en.html),
+also included in our repository in the `COPYING.LESSER` file.
+
+The bsc binaries (i.e. all code inside of the `cmd` directory) is licensed under the
+[GNU General Public License v3.0](https://www.gnu.org/licenses/gpl-3.0.en.html), also
+included in our repository in the `COPYING` file.
